@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -32,6 +33,7 @@ import com.sagarnileshshah.nytsearchapp.models.gson.JSONTopLevel;
 import org.parceler.Parcels;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 
 import butterknife.Bind;
@@ -43,10 +45,21 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     static final String ARTICLE_SEARCH_URL = "http://api.nytimes.com/svc/search/v2/articlesearch.json";
     static final String API_KEY = "e9d5bb253d22d14fcc8a2c53f0e3956f:0:74368102";
 
+    @Bind(R.id.tvQuery)
+    TextView tvQuery;
+
+    @Bind(R.id.tvStartDate)
+    TextView tvStartDate;
+
+    @Bind(R.id.tvNewsDesk)
+    TextView tvNewsDesk;
+
+    @Bind(R.id.tvSortBy)
+    TextView tvSortBy;
+
     @Bind(R.id.gvArticles)
     GridView gvArticles;
 
-    MenuItem actionSettings;
     MenuItem actionFilter;
 
     ArrayList<Article> mArticleList;
@@ -62,6 +75,11 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ButterKnife.bind(this);
+
+        tvQuery.setVisibility(View.GONE);
+        tvNewsDesk.setVisibility(View.GONE);
+        tvStartDate.setVisibility(View.GONE);
+        tvSortBy.setVisibility(View.GONE);
 
         mArticleList = new ArrayList<>();
         mArticleArrayAdapter = new ArticleArrayAdapter(this, mArticleList);
@@ -152,6 +170,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     public void doArticleSearch(int page) {
         if (page == 0) {
             mArticleList.clear();
+            renderFilterDesc(tvQuery, mQuery, true);
         }
 
         if (!isNetworkAvailable() || !isOnline()) {
@@ -248,7 +267,60 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     @Override
     public void applyFilter(Filter filter) {
         mFilter = filter;
+
         if (!mQuery.equals(""))
             doArticleSearch(0);
+
+        try {
+            if (!mFilter.getFormattedStartDate().equals(""))
+                renderFilterDesc(tvStartDate, mFilter.getFormattedStartDate(), true);
+            else
+                renderFilterDesc(tvStartDate, "", false);
+        } catch (ParseException e) {
+            renderFilterDesc(tvStartDate, "", false);
+            e.printStackTrace();
+        }
+
+        String choices = "";
+        if (mFilter.getNewsDesk().size() > 0) {
+            for (int i = 0; i < mFilter.getNewsDesk().size(); i++) {
+                choices += mFilter.getNewsDesk().get(i);
+                if (i != mFilter.getNewsDesk().size() - 1)
+                    choices += ", ";
+            }
+            renderFilterDesc(tvNewsDesk, choices, true);
+        } else
+            renderFilterDesc(tvNewsDesk, choices, false);
+
+
+        if (!mFilter.getSortBy().equals(""))
+            renderFilterDesc(tvSortBy, mFilter.getSortBy(), true);
+        else
+            renderFilterDesc(tvSortBy, mFilter.getSortBy(), false);
+    }
+
+    private void renderFilterDesc(TextView view, String value, Boolean toShow) {
+        if (!toShow) {
+            view.setVisibility(View.GONE);
+        } else {
+
+            String key = "";
+            String text = "";
+            if (view.getId() == tvQuery.getId()) {
+                key = getString(R.string.search_query);
+            } else if (view.getId() == tvStartDate.getId()) {
+                key = getString(R.string.start_date);
+            } else if (view.getId() == tvNewsDesk.getId()) {
+                key = getString(R.string.news_desk);
+            } else if (view.getId() == tvSortBy.getId()) {
+                key = getString(R.string.sort_by);
+            }
+
+            text += key + ": ";
+            text += value;
+            view.setText(text);
+
+            view.setVisibility(View.VISIBLE);
+        }
     }
 }

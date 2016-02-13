@@ -30,6 +30,17 @@ public class Filter {
         return startDate;
     }
 
+    public String getFormattedStartDate() throws ParseException {
+        if (!startDate.equals("")) {
+            SimpleDateFormat originalFormat = new SimpleDateFormat("yyyyMMdd");
+            SimpleDateFormat targetFormat = new SimpleDateFormat("MMM dd, yyyy");
+            Date date = originalFormat.parse(startDate);
+            return targetFormat.format(date);
+        } else {
+            return startDate;
+        }
+    }
+
     public int[] getStartDateArray() throws ParseException {
         if (!startDate.equals("")) {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");

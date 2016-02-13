@@ -183,7 +183,7 @@ public class FilterDialogFragment extends DialogFragment {
         if (!mFilter.getStartDate().equals("")) {
             try {
                 int[] dateArray = mFilter.getStartDateArray();
-                datePicker.updateDate(dateArray[0], dateArray[1] - 1, dateArray[2]);
+                datePicker.updateDate(dateArray[0], dateArray[1], dateArray[2]);
                 switchStartDate.setChecked(true);
                 datePicker.setVisibility(View.VISIBLE);
             } catch (ParseException e) {
@@ -246,7 +246,7 @@ public class FilterDialogFragment extends DialogFragment {
 
     private void updateFilter() {
         if (switchStartDate.isChecked())
-            mFilter.setStartDate(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
+            mFilter.setStartDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
         else
             mFilter.setStartDate("");
 
