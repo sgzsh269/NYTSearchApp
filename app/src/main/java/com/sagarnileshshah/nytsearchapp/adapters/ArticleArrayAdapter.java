@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by sshah on 2/10/16.
  */
-public class ArticleArrayAdapter extends ArrayAdapter<Article>{
+public class ArticleArrayAdapter extends ArrayAdapter<Article> {
     public ArticleArrayAdapter(Context context, List<Article> objects) {
         super(context, 0, objects);
     }
@@ -33,7 +33,7 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article>{
         @Bind(R.id.tvHeadline)
         TextView tvHeadline;
 
-        ViewHolder(View view){
+        ViewHolder(View view) {
             ButterKnife.bind(this, view);
         }
     }
@@ -44,7 +44,7 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article>{
         Article article = getItem(position);
 
         ViewHolder viewHolder;
-        if(convertView == null){
+        if (convertView == null) {
             LayoutInflater layoutInflater = LayoutInflater.from(getContext());
             convertView = layoutInflater.inflate(R.layout.item_article, parent, false);
             viewHolder = new ViewHolder(convertView);
@@ -57,9 +57,7 @@ public class ArticleArrayAdapter extends ArrayAdapter<Article>{
 
         viewHolder.ivThumbnail.setImageResource(0);
 
-        if (!article.getThumbNail().equals("")) {
-            Glide.with(getContext()).load(article.getThumbNail()).into(viewHolder.ivThumbnail);
-        }
+        Glide.with(getContext()).load(article.getThumbNailUrl()).error(R.drawable.ic_placeholder).placeholder(R.drawable.ic_placeholder).into(viewHolder.ivThumbnail);
 
         return convertView;
     }

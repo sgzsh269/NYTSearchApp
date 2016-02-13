@@ -1,8 +1,13 @@
 package com.sagarnileshshah.nytsearchapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -30,7 +35,7 @@ public class ArticleActivity extends AppCompatActivity {
 
         Article article = (Article) Parcels.unwrap(getIntent().getParcelableExtra("article"));
 
-        wvArticle.setWebViewClient(new WebViewClient(){
+        wvArticle.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
@@ -38,5 +43,22 @@ public class ArticleActivity extends AppCompatActivity {
             }
         });
         wvArticle.loadUrl(article.getWebUrl());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_article, menu);
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        ShareActionProvider miShare = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+
+        shareIntent.putExtra(Intent.EXTRA_TEXT, wvArticle.getUrl());
+
+        miShare.setShareIntent(shareIntent);
+
+        return true;
     }
 }

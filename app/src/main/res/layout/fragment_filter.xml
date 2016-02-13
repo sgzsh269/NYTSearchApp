@@ -1,17 +1,25 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.percent.PercentRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".fragments.FilterDialogFragment">
 
-    <android.support.percent.PercentRelativeLayout
+    <ScrollView
+        android:id="@+id/scrollView"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        tools:context=".fragments.FilterDialogFragment">
+        android:layout_height="300dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tvStartDate"
@@ -19,18 +27,18 @@
             android:layout_height="wrap_content"
             android:text="Start Date"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Switch
             android:id="@+id/switchStartDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_toRightOf="@id/tvStartDate"
-            android:layout_toEndOf="@id/tvStartDate"
             android:layout_alignLeft="@id/tvStartDate"
-            android:layout_alignStart="@id/tvStartDate"/>
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignStart="@id/tvStartDate"
+            android:layout_toEndOf="@id/tvStartDate"
+            android:layout_toRightOf="@id/tvStartDate" />
 
         <DatePicker
             android:id="@+id/datePicker"
@@ -39,7 +47,7 @@
             android:layout_below="@id/tvStartDate"
             android:layout_marginTop="8dp"
             android:calendarViewShown="false"
-            android:datePickerMode="spinner"></DatePicker>
+            android:datePickerMode="spinner" />
 
         <TextView
             android:id="@+id/tvNewsDesk"
@@ -49,20 +57,20 @@
             android:layout_marginTop="12dp"
             android:text="News Desk"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <Switch
             android:id="@+id/switchNewsDesk"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_below="@id/datePicker"
-            android:layout_toRightOf="@id/tvNewsDesk"
-            android:layout_toEndOf="@id/tvNewsDesk"
             android:layout_alignLeft="@id/tvNewsDesk"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_alignStart="@id/tvNewsDesk"
-            android:layout_marginTop="12dp"/>
+            android:layout_below="@id/datePicker"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@id/tvNewsDesk"
+            android:layout_toRightOf="@id/tvNewsDesk" />
 
         <CheckBox
             android:id="@+id/cbArts"
@@ -93,24 +101,24 @@
             android:id="@+id/tvSortBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/tvSortBy"
+            android:layout_alignStart="@id/tvSortBy"
             android:layout_below="@id/cbSports"
             android:layout_marginTop="12dp"
             android:text="Sort by"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:layout_alignLeft="@id/tvSortBy"
-            android:layout_alignStart="@id/tvSortBy"/>
+            android:textStyle="bold" />
 
         <Switch
             android:id="@+id/switchSortBy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
             android:layout_below="@id/cbSports"
-            android:layout_toRightOf="@id/tvSortBy"
+            android:layout_marginTop="12dp"
             android:layout_toEndOf="@id/tvSortBy"
-            android:layout_marginTop="12dp"/>
+            android:layout_toRightOf="@id/tvSortBy" />
 
         <Spinner
             android:id="@+id/spinnerSortBy"
@@ -118,29 +126,43 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvSortBy"
             android:layout_marginTop="8dp"
-            android:entries="@array/sort_array"></Spinner>
+            android:entries="@array/sort_array"/>
+        </RelativeLayout>
 
-        <Button
-            android:id="@+id/btnClose"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spinnerSortBy"
-            android:layout_marginTop="8dp"
-            android:text="Close"
-            android:textSize="16dp"
-            app:layout_widthPercent="45%" />
+    </ScrollView>
 
-        <Button
-            android:id="@+id/btnApplyFilter"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/spinnerSortBy"
-            android:layout_toRightOf="@id/btnClose"
-            android:layout_toEndOf="@id/btnClose"
-            android:layout_marginTop="8dp"
-            android:text="Apply"
-            android:textSize="16dp"
-            app:layout_widthPercent="55%" />
+    <Button
+        android:id="@+id/btnClose"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/scrollView"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/black"
+        android:text="Close"
+        android:textColor="@android:color/white"
+        android:textSize="16dp"
+        app:layout_widthPercent="45%" />
 
-    </android.support.percent.PercentRelativeLayout>
-</ScrollView>
+    <Button
+        android:id="@+id/btnApplyFilter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/scrollView"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="16dp"
+        android:layout_toEndOf="@id/btnClose"
+        android:layout_toRightOf="@id/btnClose"
+        android:background="@android:color/black"
+        android:text="Apply"
+        android:textColor="@android:color/white"
+        android:textSize="16dp"
+        app:layout_widthPercent="45%" />
+
+</android.support.percent.PercentRelativeLayout>

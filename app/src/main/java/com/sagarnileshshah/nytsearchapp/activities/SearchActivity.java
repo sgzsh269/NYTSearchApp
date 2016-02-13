@@ -19,18 +19,16 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.sagarnileshshah.nytsearchapp.R;
 import com.sagarnileshshah.nytsearchapp.adapters.ArticleArrayAdapter;
 import com.sagarnileshshah.nytsearchapp.fragments.FilterDialogFragment;
 import com.sagarnileshshah.nytsearchapp.listeners.EndlessScrollListener;
 import com.sagarnileshshah.nytsearchapp.models.Article;
 import com.sagarnileshshah.nytsearchapp.models.Filter;
+import com.sagarnileshshah.nytsearchapp.models.gson.JSONTopLevel;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.parceler.Parcels;
 
 import java.io.IOException;
@@ -187,27 +185,31 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             requestParams.put("sort", mFilter.getSortBy().toLowerCase());
         }
 
+        final String contentErrorMsg = "Sorry. Unable to get content from NYT. Please try again after some time.";
+        final String noContentMsg = "No content available for given search query and chosen filters";
+
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 
-        asyncHttpClient.get(ARTICLE_SEARCH_URL, requestParams, new JsonHttpResponseHandler() {
+        asyncHttpClient.get(ARTICLE_SEARCH_URL, requestParams, new TextHttpResponseHandler() {
             @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-
-                try {
-                    if (response.getJSONObject("response").optJSONArray("docs") != null) {
-                        JSONArray docsJSONArray = response.getJSONObject("response").getJSONArray("docs");
-                        mArticleList.addAll(Article.fromJSONArray(docsJSONArray));
+            public void onSuccess(int statusCode, Header[] headers, String json) {
+                if (statusCode == 200) {
+                    JSONTopLevel jsonTopLevel = JSONTopLevel.parseJson(json);
+                    if (jsonTopLevel.getResponse().getDocs().size() > 0) {
+                        mArticleList.addAll(Article.fromGson(jsonTopLevel));
                         mArticleArrayAdapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(SearchActivity.this, noContentMsg, Toast.LENGTH_LONG).show();
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                } else {
+                    Toast.makeText(SearchActivity.this, contentErrorMsg, Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(this.toString(), responseString);
-                Toast.makeText(SearchActivity.this, "Sorry. Unable to get content from NYT. Please try again after some time.", Toast.LENGTH_LONG).show();
+                Toast.makeText(SearchActivity.this, contentErrorMsg, Toast.LENGTH_LONG).show();
             }
         });
     }
