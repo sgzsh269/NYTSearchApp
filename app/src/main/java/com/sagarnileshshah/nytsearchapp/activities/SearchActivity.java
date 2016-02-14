@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -67,6 +68,9 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     @Bind(R.id.ivPlaceholderArticle)
     ImageView ivPlaceholderArticle;
 
+    @Bind(R.id.swipeContainer)
+    SwipeRefreshLayout swipeContainer;
+
     MenuItem actionFilter;
 
     ArrayList<Article> mArticleList;
@@ -111,6 +115,18 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
             }
         });
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                doArticleSearch(0);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(android.R.color.black,
+                android.R.color.black,
+                android.R.color.black,
+                android.R.color.black);
 
         mFilter = new Filter();
         mQuery = "";
@@ -188,10 +204,12 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             if (!isNetworkAvailable()) {
                 renderSnackBar("No network connection. Please check network settings and activate either Wifi or Data.");
                 pbProgressBar.setVisibility(View.GONE);
+                swipeContainer.setRefreshing(false);
 
             } else {
                 renderSnackBar("Current network not connected to the internet. Please try again after some time or contact network operator.");
                 pbProgressBar.setVisibility(View.GONE);
+                swipeContainer.setRefreshing(false);
             }
             return;
         }
@@ -246,6 +264,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                     renderSnackBar(contentErrorMsg);
                 }
                 pbProgressBar.setVisibility(View.GONE);
+                swipeContainer.setRefreshing(false);
             }
 
             @Override
@@ -253,6 +272,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 Log.e(this.toString(), responseString);
                 renderSnackBar(contentErrorMsg);
                 pbProgressBar.setVisibility(View.GONE);
+                swipeContainer.setRefreshing(false);
             }
         });
     }
