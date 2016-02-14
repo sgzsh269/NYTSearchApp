@@ -5,7 +5,7 @@
     android:orientation="vertical"
     android:background="@drawable/item_article_border"
     android:padding="8dp"
-    android:elevation="2dp">
+    android:elevation="4dp">
 
     <TextView
         android:id="@+id/tvHeadline"

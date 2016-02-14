@@ -221,6 +221,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
         final String contentErrorMsg = "Sorry. Unable to get content from NYT. Please try again after some time.";
         final String noContentMsg = "No content available for given search query and chosen filters";
+        final String noMoreContentMsg = "No more content available for given search query and chosen filters";
 
         AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 
@@ -238,7 +239,8 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                             rvArticles.scrollToPosition(0);
                         }
                     } else {
-                        renderSnackBar(noContentMsg);
+                        if(mArticleList.size() == 0)
+                            renderSnackBar(noContentMsg);
                     }
                 } else {
                     renderSnackBar(contentErrorMsg);
