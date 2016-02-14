@@ -1,36 +1,37 @@
 package com.sagarnileshshah.nytsearchapp.activities;
 
 import android.content.Context;
-import android.content.Intent;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.TextHttpResponseHandler;
 import com.sagarnileshshah.nytsearchapp.R;
-import com.sagarnileshshah.nytsearchapp.adapters.ArticleArrayAdapter;
+import com.sagarnileshshah.nytsearchapp.adapters.ArticleRecyclerViewAdapter;
+import com.sagarnileshshah.nytsearchapp.decorations.ArticleItemDecoration;
 import com.sagarnileshshah.nytsearchapp.fragments.FilterDialogFragment;
-import com.sagarnileshshah.nytsearchapp.listeners.EndlessScrollListener;
+import com.sagarnileshshah.nytsearchapp.listeners.EndlessRecyclerViewScrollListener;
 import com.sagarnileshshah.nytsearchapp.models.Article;
 import com.sagarnileshshah.nytsearchapp.models.Filter;
 import com.sagarnileshshah.nytsearchapp.models.gson.JSONTopLevel;
-
-import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -57,13 +58,19 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
     @Bind(R.id.tvSortBy)
     TextView tvSortBy;
 
-    @Bind(R.id.gvArticles)
-    GridView gvArticles;
+    @Bind(R.id.rvArticles)
+    RecyclerView rvArticles;
+
+    @Bind(R.id.pbProgressBar)
+    ProgressBar pbProgressBar;
+
+    @Bind(R.id.ivPlaceholderArticle)
+    ImageView ivPlaceholderArticle;
 
     MenuItem actionFilter;
 
     ArrayList<Article> mArticleList;
-    ArticleArrayAdapter mArticleArrayAdapter;
+    ArticleRecyclerViewAdapter mArticleRecyclerViewAdapter;
     Filter mFilter;
     String mQuery;
 
@@ -82,27 +89,26 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         tvSortBy.setVisibility(View.GONE);
 
         mArticleList = new ArrayList<>();
-        mArticleArrayAdapter = new ArticleArrayAdapter(this, mArticleList);
-        gvArticles.setAdapter(mArticleArrayAdapter);
 
-        gvArticles.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mArticleRecyclerViewAdapter = new ArticleRecyclerViewAdapter(SearchActivity.this, mArticleList);
+
+        rvArticles.setAdapter(mArticleRecyclerViewAdapter);
+
+        StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+        rvArticles.setLayoutManager(staggeredGridLayoutManager);
+
+        ArticleItemDecoration articleItemDecoration = new ArticleItemDecoration(16);
+        rvArticles.addItemDecoration(articleItemDecoration);
+
+        //rvArticles.setItemAnimator(new SlideInUpAnimator());
+
+        rvArticles.addOnScrollListener(new EndlessRecyclerViewScrollListener(staggeredGridLayoutManager) {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Article article = mArticleList.get(position);
-                Intent i = new Intent(SearchActivity.this, ArticleActivity.class);
-                i.putExtra("article", Parcels.wrap(article));
-                startActivity(i);
-            }
-        });
-
-        gvArticles.setOnScrollListener(new EndlessScrollListener() {
-            @Override
-            public boolean onLoadMore(int page, int totalItemsCount) {
-
+            public void onLoadMore(int page, int totalItemsCount) {
                 doArticleSearch(page);
 
-                return true;
             }
         });
 
@@ -150,6 +156,8 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
             }
         });
 
+        searchView.setMaxWidth(Integer.MAX_VALUE);
+
         return true;
     }
 
@@ -167,17 +175,24 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         return super.onOptionsItemSelected(item);
     }
 
-    public void doArticleSearch(int page) {
+    public void doArticleSearch(final int page) {
+        ivPlaceholderArticle.setVisibility(View.GONE);
         if (page == 0) {
+            mArticleRecyclerViewAdapter.notifyItemRangeRemoved(0, mArticleList.size());
             mArticleList.clear();
+            pbProgressBar.setVisibility(View.VISIBLE);
             renderFilterDesc(tvQuery, mQuery, true);
         }
 
         if (!isNetworkAvailable() || !isOnline()) {
-            if (!isNetworkAvailable())
-                Toast.makeText(this, "No network connection. Please check network settings and activate either Wifi or Data.", Toast.LENGTH_LONG).show();
-            else
-                Toast.makeText(this, "Current network not connected to the internet. Please try again after some time or contact network operator.", Toast.LENGTH_LONG).show();
+            if (!isNetworkAvailable()) {
+                renderSnackBar("No network connection. Please check network settings and activate either Wifi or Data.");
+                pbProgressBar.setVisibility(View.GONE);
+
+            } else {
+                renderSnackBar("Current network not connected to the internet. Please try again after some time or contact network operator.");
+                pbProgressBar.setVisibility(View.GONE);
+            }
             return;
         }
 
@@ -215,20 +230,27 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                 if (statusCode == 200) {
                     JSONTopLevel jsonTopLevel = JSONTopLevel.parseJson(json);
                     if (jsonTopLevel.getResponse().getDocs().size() > 0) {
-                        mArticleList.addAll(Article.fromGson(jsonTopLevel));
-                        mArticleArrayAdapter.notifyDataSetChanged();
+                        ArrayList<Article> articleList = Article.fromGson(jsonTopLevel);
+                        mArticleList.addAll(articleList);
+                        int curSize = mArticleRecyclerViewAdapter.getItemCount();
+                        mArticleRecyclerViewAdapter.notifyItemRangeInserted(curSize, mArticleList.size() - 1);
+                        if (page == 0) {
+                            rvArticles.scrollToPosition(0);
+                        }
                     } else {
-                        Toast.makeText(SearchActivity.this, noContentMsg, Toast.LENGTH_LONG).show();
+                        renderSnackBar(noContentMsg);
                     }
                 } else {
-                    Toast.makeText(SearchActivity.this, contentErrorMsg, Toast.LENGTH_LONG).show();
+                    renderSnackBar(contentErrorMsg);
                 }
+                pbProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
                 Log.e(this.toString(), responseString);
-                Toast.makeText(SearchActivity.this, contentErrorMsg, Toast.LENGTH_LONG).show();
+                renderSnackBar(contentErrorMsg);
+                pbProgressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -322,5 +344,20 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
 
             view.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void renderSnackBar(String msg) {
+
+        final Snackbar snackBar = Snackbar.make(tvQuery, msg, Snackbar.LENGTH_INDEFINITE);
+
+        snackBar.setAction("Dismiss", new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                snackBar.dismiss();
+
+            }
+        });
+        snackBar.setActionTextColor(Color.WHITE).show();
     }
 }

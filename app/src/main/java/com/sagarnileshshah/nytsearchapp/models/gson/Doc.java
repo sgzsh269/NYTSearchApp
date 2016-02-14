@@ -1,12 +1,16 @@
 
 package com.sagarnileshshah.nytsearchapp.models.gson;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Doc {
 
+    @SerializedName("web_url")
     private String webUrl;
+
     private List<Multimedium> multimedia = new ArrayList<Multimedium>();
     private Headline headline;
 

@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:background="@android:color/white"
+        android:elevation="2dp"
         android:padding="8dp"
         android:textColor="@android:color/black"
         android:textSize="16sp"
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:background="@android:color/white"
+        android:elevation="2dp"
         android:padding="8dp"
         android:textColor="@android:color/black"
         android:textSize="16sp"
@@ -37,6 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:background="@android:color/white"
+        android:elevation="2dp"
         android:padding="8dp"
         android:textColor="@android:color/black"
         android:textSize="16sp"
@@ -48,18 +51,31 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:background="@android:color/white"
+        android:elevation="2dp"
         android:padding="8dp"
         android:textColor="@android:color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
 
-    <GridView
-        android:id="@+id/gvArticles"
+    <ProgressBar
+        android:id="@+id/pbProgressBar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/ivPlaceholderArticle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="8dp"
-        android:horizontalSpacing="10dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="10dp" />
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_placeholder_article" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvArticles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp" />
 
 </LinearLayout>

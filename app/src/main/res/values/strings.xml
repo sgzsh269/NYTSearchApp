@@ -6,4 +6,10 @@
     <string name="start_date">Start Date</string>
     <string name="news_desk">News Desk</string>
     <string name="sort_by">Sort by</string>
+    <string name="arts">Arts</string>
+    <string name="fashion">Fashion &amp; Style</string>
+    <string name="sports">Sports</string>
+    <string name="close">Close</string>
+    <string name="apply">Apply</string>
+    <string name="filter_dailog_title">Filter</string>
 </resources>

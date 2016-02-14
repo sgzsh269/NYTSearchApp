@@ -2,20 +2,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".fragments.FilterDialogFragment">
 
-    <ScrollView
+    <TextView
+        android:id="@+id/tvFilterTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/filter_dailog_title"
+        android:textColor="@android:color/black"
+        android:textSize="24sp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"/>
+
+    <com.sagarnileshshah.nytsearchapp.views.CustomScrollView
         android:id="@+id/scrollView"
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="300dp">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvFilterTitle">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -25,7 +36,8 @@
             android:id="@+id/tvStartDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Start Date"
+            android:text="@string/start_date"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -55,7 +67,8 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/datePicker"
             android:layout_marginTop="12dp"
-            android:text="News Desk"
+            android:text="@string/news_desk"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -78,7 +91,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/tvNewsDesk"
             android:layout_marginTop="8dp"
-            android:text="Arts"
+            android:text="@string/arts"
             android:textSize="16sp" />
 
         <CheckBox
@@ -86,7 +99,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/cbArts"
-            android:text="Fashion &amp; Style"
+            android:text="@string/fashion"
             android:textSize="16sp" />
 
         <CheckBox
@@ -94,7 +107,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/cbFashion"
-            android:text="Sports"
+            android:text="@string/sports"
             android:textSize="16sp" />
 
         <TextView
@@ -106,6 +119,7 @@
             android:layout_below="@id/cbSports"
             android:layout_marginTop="12dp"
             android:text="Sort by"
+            android:textColor="@android:color/black"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -129,7 +143,7 @@
             android:entries="@array/sort_array"/>
         </RelativeLayout>
 
-    </ScrollView>
+    </com.sagarnileshshah.nytsearchapp.views.CustomScrollView>
 
     <Button
         android:id="@+id/btnClose"
@@ -142,7 +156,7 @@
         android:layout_marginRight="4dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/black"
-        android:text="Close"
+        android:text="@string/close"
         android:textColor="@android:color/white"
         android:textSize="16dp"
         app:layout_widthPercent="45%" />
@@ -160,7 +174,7 @@
         android:layout_toEndOf="@id/btnClose"
         android:layout_toRightOf="@id/btnClose"
         android:background="@android:color/black"
-        android:text="Apply"
+        android:text="@string/apply"
         android:textColor="@android:color/white"
         android:textSize="16dp"
         app:layout_widthPercent="45%" />

@@ -32,13 +32,12 @@
 
     <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">24sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="DialogTheme" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@android:color/black</item>
 
-        <item name="android:windowNoTitle">false</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowTitleStyle">@style/DialogWindowTitle</item>
     </style>
 
