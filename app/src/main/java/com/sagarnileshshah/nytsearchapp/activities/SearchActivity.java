@@ -201,15 +201,12 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
         }
 
         if (!isNetworkAvailable() || !isOnline()) {
+            pbProgressBar.setVisibility(View.GONE);
+            swipeContainer.setRefreshing(false);
             if (!isNetworkAvailable()) {
                 renderSnackBar("No network connection. Please check network settings and activate either Wifi or Data.");
-                pbProgressBar.setVisibility(View.GONE);
-                swipeContainer.setRefreshing(false);
-
             } else {
                 renderSnackBar("Current network not connected to the internet. Please try again after some time or contact network operator.");
-                pbProgressBar.setVisibility(View.GONE);
-                swipeContainer.setRefreshing(false);
             }
             return;
         }
@@ -257,7 +254,7 @@ public class SearchActivity extends AppCompatActivity implements FilterDialogFra
                             rvArticles.scrollToPosition(0);
                         }
                     } else {
-                        if(mArticleList.size() == 0)
+                        if (mArticleList.size() == 0)
                             renderSnackBar(noContentMsg);
                     }
                 } else {
